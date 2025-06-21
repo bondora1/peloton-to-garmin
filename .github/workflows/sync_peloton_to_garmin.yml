@@ -18,11 +18,6 @@ jobs:
         with:
           image: philosowaffle/peloton-to-garmin:console-stable
           options: --rm
-          envs: |
-            PELOTON_USERNAME
-            PELOTON_PASSWORD
-            GARMIN_USERNAME
-            GARMIN_PASSWORD
         env:
           PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
           PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
