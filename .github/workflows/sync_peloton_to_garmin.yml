@@ -8,15 +8,18 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    container:
-      image: philosowaffle/peloton-to-garmin:console-stable
-
-    env:
-      PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
-      PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
-      GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
-      GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
 
     steps:
-      - name: 🔁 Run sync
-        run: dotnet PelotonToGarmin.Console.dll
+      - name: 🧱 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐳 Run Docker container to sync
+        uses: addnab/docker-run-action@v3
+        with:
+          image: philosowaffle/peloton-to-garmin:console-stable
+          env:
+            PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
+            PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
+            GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
+            GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          options: --rm
