@@ -1,25 +1,32 @@
 # This is a workflow that will automatically sync your Peloton rides with Garmin
 
-name: 🔄 Sync
+name: 🔄 Sync Peloton to Garmin
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *"  # 2:00 AM UTC daily
+    - cron: '0 2 * * *'  # Runs every day at 2:00 AM UTC
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    container:
-      image: philosowaffle/peloton-to-garmin:console-stable
-    env:
-      PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
-      PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
-      GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
-      GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+
     steps:
-      - name: 🏃 Run sync
-        run: dotnet PelotonToGarmin.Console.dll
+      - name: 🧱 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐳 Run sync in Docker container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: philosowaffle/peloton-to-garmin:console-stable
+          env:
+            PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
+            PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
+            GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
+            GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          options: --rm
+          run: dotnet PelotonToGarmin.Console.dll
+
 
     - name: 📁Create output directory
       run: mkdir -p ${{ env.OUTPUT_DIR }}
